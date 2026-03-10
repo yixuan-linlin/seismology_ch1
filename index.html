@@ -247,140 +247,59 @@
             <p class="mb-4 text-lg">讓大師帶你看看課本上的精華圖片，它們告訴了我們地震波是如何旅行的：</p>
             
             <div class="img-card">
-                <div class="img-wrapper">
-                    <img src="https://raw.githubusercontent.com/yixuan-linlin/seismology_ch1/main/fig.1.1-1.png" alt="圖 1.1-1" class="content-img">
-                </div>
+                <div class="img-wrapper"><img src="https://raw.githubusercontent.com/yixuan-linlin/seismology_ch1/main/fig.1.1-1.png" alt="圖 1.1-1" class="content-img"></div>
                 <div class="text-wrapper">
                     <h3 class="font-bold text-xl mb-2">📡 Fig 1.1-1：地震觀測的三要素</h3>
-                    <p class="text-md text-gray-700 leading-relaxed">
-                        這就是地震學的鐵三角！由 <strong>波源 (Source)</strong> 產生脈衝，經過地球內部的 <strong>介質 (Medium)</strong> 傳播，最後由 <strong>接收器 (Receiver)</strong> 記錄成「地震圖」。
-                    </p>
+                    <p class="text-md text-gray-700 leading-relaxed">波源 (Source)、介質 (Medium)、接收器 (Receiver)。</p>
                 </div>
             </div>
-
-            <div class="img-card">
-                <div class="img-wrapper">
-                    <img src="https://raw.githubusercontent.com/yixuan-linlin/seismology_ch1/main/fig.1.1-2.png" alt="圖 1.1-2" class="content-img">
-                </div>
-                <div class="text-wrapper">
-                    <h3 class="font-bold text-xl mb-2">🪃 Fig 1.1-2：波為什麼會轉彎？</h3>
-                    <p class="text-md text-gray-700 leading-relaxed">
-                        地震波的速度會隨深度增加。根據物理的折射原理，波線會向地表方向彎曲，呈現一個「向下凸」的弧線。
-                    </p>
-                </div>
-            </div>
-            
             <div class="quiz-box">
-                <h3 class="font-bold text-xl mb-2">🤔 小測驗</h3>
-                <p>根據 Fig 1.1-2，地震波路徑呈現向下凸的弧線，主要原因是什麼？</p>
-                <div class="mt-3">
-                    <button class="btn" onclick="checkAnswer('p2', false)">A. 地心引力</button>
-                    <button class="btn" onclick="checkAnswer('p2', true)">B. 越深波速越快產生折射</button>
-                </div>
-                <div id="ans-p2" class="answer-box">
-                    <strong>解答：B！</strong>
-                </div>
+                <h3 class="font-bold text-xl mb-2">🤔 小測驗 (選擇題)</h3>
+                <p>地震波在地球內部路徑會彎曲，主要原因是什麼？</p>
+                <button class="btn" onclick="checkAnswer('p2', true)">B. 越深波速越快產生折射</button>
+                <div id="ans-p2" class="answer-box"><strong>解答：B！</strong></div>
             </div>
-        </div>
-
-        <div class="page" id="page-3">
-            <h1 class="text-3xl font-bold mb-4">⚠️ 3. Hazard 與 Risk 的區別</h1>
-            <p class="text-lg leading-relaxed mb-4">
-                🌋 <strong>Seismic Hazard (地震危害)：</strong> 大自然給的。你無法改變熊的存在。<br>
-                🏚️ <strong>Seismic Risk (地震風險)：</strong> 人為因素決定的。蓋好房子能降低 Risk！
-            </p>
-            <div class="quiz-box">
-                <button class="btn" onclick="toggleAnswer('ans-p3')">看解答 👀</button>
-                <div id="ans-p3" class="answer-box">
-                    <strong>解答：</strong> Hazard 取決於地震規模，Risk 取決於該地的建築與人口密度。
-                </div>
-            </div>
-        </div>
-
-        <div class="page" id="page-4">
-            <h1 class="text-3xl font-bold mb-4">📉 4. 能量為何會衰減？</h1>
-            <p class="text-lg">原因有二：幾何擴散（距離拉遠）與內在衰減（摩擦生熱）。</p>
-            <div class="wave-container"><div class="wave-circle"></div><div class="wave-circle"></div></div>
-            <button class="btn mt-4" onclick="checkAnswer('p4', true)">我知道了！</button>
-            <div id="ans-p4" class="answer-box">正確！幾何擴散與內在衰減缺一不可。</div>
-        </div>
-        
-        <div class="page" id="page-5">
-             <h1 class="text-3xl font-bold mb-4">🏚️ 5. 地震災害與風險評估</h1>
-             <p>美國東部地層堅硬，波跑得遠；西部斷層活動頻繁，Hazard 高。</p>
-             <img src="https://raw.githubusercontent.com/yixuan-linlin/seismology_ch1/main/fig.1.2-5.png" class="content-img my-4">
-             <button class="btn" onclick="toggleAnswer('ans-p5')">查看詳解</button>
-             <div id="ans-p5" class="answer-box">東部衰減慢，影響範圍大。</div>
-        </div>
-
-        <div class="page" id="page-6">
-            <h1 class="text-3xl font-bold mb-4">🏗️ 6. 建築物共振</h1>
-            <div class="building-container">
-                <div class="building short"></div>
-                <div class="building tall"></div>
-            </div>
-            <p>摩天大樓怕低頻長波，矮房怕高頻短波。</p>
-            <button class="btn" onclick="checkAnswer('p6', true)">高樓怕長波</button>
-            <div id="ans-p6" class="answer-box">正確！共振會放大搖晃。</div>
-        </div>
-
-        <div class="page" id="page-7">
-            <h1 class="text-3xl font-bold mb-4">🌊 7. 土壤液化</h1>
-            <p>沙土 + 高水位 + 強震 = 泥巴湯。建築會下沉！</p>
-        </div>
-
-        <div class="page" id="page-8">
-            <h1 class="text-3xl font-bold mb-4">🔮 8. 預報 vs 預測</h1>
-            <p>預報 (Forecast)：機率性。預測 (Prediction)：精確時間地點（目前做不到）。</p>
-        </div>
-
-        <div class="page" id="page-9">
-            <h1 class="text-3xl font-bold mb-4">🧩 9. 地震空區</h1>
-            <p>很久沒地震的斷層段，是累積能量最多的危險區。</p>
-        </div>
-
-        <div class="page" id="page-10">
-            <h1 class="text-3xl font-bold mb-4">🕵️‍♂️ 10. 地震前兆</h1>
-            <p>地殼變形、氡氣、地下水位。目前皆難以作為精確預報基準。</p>
-        </div>
-
-        <div class="page" id="page-11">
-            <h1 class="text-3xl font-bold mb-4">☢️ 11. 抓出核子試爆！</h1>
-            <p>核爆：全向壓縮。地震：有推有拉。地震儀能一眼看出差異！</p>
         </div>
 
         <div class="page text-center" id="page-12">
-            <h1 class="text-4xl font-bold mb-6">🏆 終極試煉</h1>
+            <h1 class="text-4xl font-bold mb-6">🏆 終極試煉：大師的認證</h1>
+            <p class="text-xl mb-6">準備好了嗎？</p>
+            
             <div id="game-intro">
                 <button class="btn text-2xl px-8 py-4" style="background-color: var(--macaron-pink); border-color: transparent;" onclick="startGame()">
                     🎮 進入終極測驗
                 </button>
             </div>
+
             <div id="game-area" class="hidden text-left bg-white p-6 rounded shadow-lg max-w-lg mx-auto border-t-8 border-green-400">
                 <h2 id="q-text" class="text-2xl font-bold mb-4">問題...</h2>
-                <div id="q-options" class="flex flex-col"></div>
-                <div id="game-feedback" class="mt-4 font-bold text-lg"></div>
+                <div id="q-options" class="flex flex-col gap-3"></div>
+                <div id="game-feedback" class="mt-4 font-bold text-lg hidden"></div>
+            </div>
+            
+            <div id="game-result" class="hidden">
+                <h2 class="text-5xl mb-4">🎓</h2>
+                <h2 class="text-3xl font-bold">恭喜！你獲得了地震學大師證書！</h2>
+                <p class="mt-4">你已經完全掌握了地震學的第一章核心知識。</p>
+                <button class="btn mt-6" onclick="location.reload()">重新挑戰</button>
             </div>
         </div>
-
     </div>
 
     <script>
         function showPage(index) {
+            // 切換頁面顯示
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-' + index).classList.add('active');
             
+            // 更新導覽列狀態
             document.querySelectorAll('.nav-item').forEach((item, i) => {
-                if(i-1 === index || (index === 0 && i === 1)) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
+                if(i === index) item.classList.add('active');
+                else item.classList.remove('active');
             });
-            // 修正導覽列啟動狀態
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(n => n.classList.remove('active'));
-            navItems[index].classList.add('active');
+
+            // 滾動內容回頂部
+            document.getElementById('main-content').scrollTop = 0;
         }
 
         function checkAnswer(id, isCorrect) {
@@ -394,12 +313,14 @@
             box.style.display = (box.style.display === 'block') ? 'none' : 'block';
         }
 
-        // 遊戲邏輯
+        // 終極遊戲邏輯
         const questions = [
-            { q: "地震學家像是在幫地球做什麼？", a: ["開刀", "照超音波/聽診"], c: 1 },
-            { q: "哪種情況 Risk 最高？", a: ["無人區大地震", "人口密集區蓋土房"], c: 1 },
-            { q: "地震儀如何發現核爆？", a: ["看波形是否全向壓縮", "看地震震級"], c: 0 }
+            { q: "地震學家主要是靠什麼「看見」地球內部？", a: ["挖洞直達地心", "地震波"], correct: 1 },
+            { q: "「Seismic Risk」高代表什麼？", a: ["大自然地震很多", "人類防災沒做好"], correct: 1 },
+            { q: "高樓大廈最怕什麼樣的波？", a: ["快速搖晃的高頻波", "緩慢搖晃的低頻波"], correct: 1 },
+            { q: "土壤液化需要什麼條件？", a: ["堅硬岩盤", "鬆散沙土+高地下水位"], correct: 1 }
         ];
+
         let currentQ = 0;
 
         function startGame() {
@@ -409,29 +330,31 @@
         }
 
         function loadQuestion() {
-            if(currentQ >= questions.length) {
-                document.getElementById('game-area').innerHTML = "<h2 class='text-3xl font-bold'>🎉 恭喜通過大師認證！</h2>";
-                return;
-            }
             const q = questions[currentQ];
-            document.getElementById('q-text').innerText = q.q;
-            const options = document.getElementById('q-options');
-            options.innerHTML = "";
-            q.a.forEach((ans, i) => {
+            document.getElementById('q-text').innerText = `Q${currentQ+1}: ${q.q}`;
+            const optionsDiv = document.getElementById('q-options');
+            optionsDiv.innerHTML = '';
+            q.a.forEach((opt, i) => {
                 const btn = document.createElement('button');
-                btn.className = "btn text-left mb-2";
-                btn.innerText = ans;
-                btn.onclick = () => {
-                    if(i === q.c) {
-                        currentQ++;
-                        document.getElementById('game-feedback').innerText = "✅ 太棒了！下一題...";
-                        setTimeout(loadQuestion, 1000);
-                    } else {
-                        document.getElementById('game-feedback').innerText = "❌ 再想想看喔！";
-                    }
-                };
-                options.appendChild(btn);
+                btn.className = 'btn text-left';
+                btn.innerText = opt;
+                btn.onclick = () => selectAnswer(i);
+                optionsDiv.appendChild(btn);
             });
+        }
+
+        function selectAnswer(idx) {
+            if(idx === questions[currentQ].correct) {
+                currentQ++;
+                if(currentQ < questions.length) {
+                    loadQuestion();
+                } else {
+                    document.getElementById('game-area').classList.add('hidden');
+                    document.getElementById('game-result').classList.remove('hidden');
+                }
+            } else {
+                alert("哎呀！選錯了，再想想看！");
+            }
         }
     </script>
 </body>
