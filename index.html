@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地震學奇妙之旅 🌍</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 馬卡龍色系定義 */
+        :root {
+            --macaron-pink: #FFB7B2;
+            --macaron-green: #E2F0CB;
+            --macaron-orange: #FFDAC1;
+            --macaron-purple: #C7CEEA;
+            --macaron-mint: #B5EAD7;
+            --macaron-yellow: #FFF5BA;
+            --text-dark: #4A4A4A;
+        }
+
+        body {
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            color: var(--text-dark);
+            background-color: #FAFAFA;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 側邊導覽列 */
+        #sidebar {
+            width: 280px;
+            background-color: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        .nav-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-left: 5px solid transparent;
+            transition: all 0.3s;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .nav-item:hover {
+            background-color: var(--macaron-yellow);
+        }
+
+        .nav-item.active {
+            background-color: var(--macaron-green);
+            border-left-color: #88C273;
+            color: #333;
+        }
+
+        /* 主要內容區 */
+        #main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px;
+            background: linear-gradient(135deg, var(--macaron-pink) 0%, var(--macaron-purple) 100%);
+        }
+
+        .page {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1, h2 { color: #333; }
+        
+        .highlight {
+            background-color: var(--macaron-yellow);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        /* 圖片樣式 */
+        .content-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 15px 0;
+            transition: transform 0.3s;
+        }
+        .content-img:hover {
+            transform: scale(1.02);
+        }
+
+        /* 測驗區塊 */
+        .quiz-box {
+            background-color: var(--macaron-mint);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background-color: white;
+            border: 2px solid #88C273;
+            color: #4A4A4A;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background-color: #88C273;
+            color: white;
+        }
+
+        .answer-box {
+            display: none;
+            background-color: rgba(255,255,255,0.8);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-left: 5px solid #FFDAC1;
+        }
+
+        /* 動畫：建築物共振 */
+        .building-container { display: flex; align-items: flex-end; justify-content: space-around; height: 200px; padding-bottom: 20px; border-bottom: 4px solid #88C273; margin: 20px 0; }
+        .building { background-color: #C7CEEA; border: 2px solid #9aa5d8; width: 60px; border-radius: 4px 4px 0 0; transform-origin: bottom center; }
+        .building.tall { height: 160px; animation: sway-slow 3s infinite ease-in-out alternate; }
+        .building.short { height: 60px; animation: sway-fast 0.5s infinite ease-in-out alternate; }
+        
+        @keyframes sway-slow { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
+        @keyframes sway-fast { from { transform: rotate(-8deg); } to { transform: rotate(8deg); } }
+
+        /* 動畫：地震波擴散 */
+        .wave-container { position: relative; width: 200px; height: 200px; margin: 0 auto; display: flex; justify-content: center; align-items: center; }
+        .wave-circle { position: absolute; border: 3px solid #FFB7B2; border-radius: 50%; animation: ripple 2s infinite ease-out; opacity: 0; }
+        .wave-circle:nth-child(2) { animation-delay: 0.6s; }
+        .wave-circle:nth-child(3) { animation-delay: 1.2s; }
+        @keyframes ripple { 0% { width: 10px; height: 10px; opacity: 1; border-width: 5px; } 100% { width: 180px; height: 180px; opacity: 0; border-width: 1px; } }
+
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <div class="p-6 text-xl font-bold border-b border-gray-200" style="background-color: var(--macaron-orange);">
+            👨‍🏫 地震學大師
+        </div>
+        <div class="nav-item active" onclick="showPage(0)">🏠 歡迎來到地震學</div>
+        <div class="nav-item" onclick="showPage(1)">1. 什麼是地震學？</div>
+        <div class="nav-item" onclick="showPage(2)">2. 地震學基礎圖解</div>
+        <div class="nav-item" onclick="showPage(3)">3. Hazard vs Risk</div>
+        <div class="nav-item" onclick="showPage(4)">4. 能量為何會衰減？</div>
+        <div class="nav-item" onclick="showPage(5)">5. 地震的社會影響</div>
+        <div class="nav-item" onclick="showPage(6)">6. 建築物與地震波</div>
+        <div class="nav-item" onclick="showPage(7)">7. 土壤液化的秘密</div>
+        <div class="nav-item" onclick="showPage(8)">8. 預報 vs 預測</div>
+        <div class="nav-item" onclick="showPage(9)">9. 什麼是地震空區？</div>
+        <div class="nav-item" onclick="showPage(10)">10. 地震能預測嗎？</div>
+        <div class="nav-item" onclick="showPage(11)">11. 抓出核子試爆！</div>
+        <div class="nav-item" onclick="showPage(12)">12. 🏆 終極挑戰遊戲</div>
+    </div>
+
+    <div id="main-content">
+        
+        <div class="page active" id="page-0">
+            <h1 class="text-3xl font-bold mb-4">👋 哈囉！準備好探索地球的秘密了嗎？</h1>
+            <p class="text-lg leading-relaxed mb-4">
+                我是你的專屬「地震學大師」。你可能會覺得地震學充滿了物理跟數學，聽起來很可怕對吧？<br>
+                別擔心！我會把複雜的公式變成像是<span class="highlight">「果凍的震動」</span>一樣簡單好懂！
+            </p>
+            <p class="text-lg leading-relaxed mb-4">
+                在接下來的 12 個關卡中，我們每次只學 2-3 個小重點，保證你學完之後，可以輕鬆地向別人炫耀這些超酷的科學知識！
+            </p>
+            <button class="btn mt-4 text-lg w-full" style="background-color: var(--macaron-pink); color: #333; border:none;" onclick="showPage(1)">
+                🚀 開始第一章的旅程！
+            </button>
+        </div>
+
+        <div class="page" id="page-1">
+            <h1 class="text-3xl font-bold mb-4">🎯 1. 地震學研究範疇</h1>
+            <p class="text-lg leading-relaxed mb-4">
+                想像一下，你買了一顆大西瓜 🍉，想知道裡面熟不熟，你會怎麼做？<br>
+                沒錯，你會**敲一敲它**，聽聽傳回來的聲音！
+            </p>
+            <p class="text-lg leading-relaxed mb-4">
+                🌍 **地震學 (Seismology)** 的概念完全一樣！<br>
+                我們無法把地球切開來看，所以我們利用地震產生時傳遞出來的「彈性波」（就像敲西瓜的聲音），來推測地球內部是長什麼樣子的。
+            </p>
+            <div class="quiz-box">
+                <h3 class="font-bold text-xl mb-2">🤔 小測驗 (是非題)</h3>
+                <p>地震學家必須要挖一個超級深的洞，才能知道地球內部的構造。</p>
+                <div class="mt-3">
+                    <button class="btn" onclick="checkAnswer('p1', false)">⭕ 是的</button>
+                    <button class="btn" onclick="checkAnswer('p1', true)">❌ 錯的</button>
+                </div>
+                <div id="ans-p1" class="answer-box">
+                    <strong>解答：❌ 錯的！</strong><br>
+                    就像醫生用聽診器不用把肚子切開一樣，地震學家是透過「地震波」在地球內部傳遞的特性，來「看見」地球內部的構造喔！
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page-2">
+            <h1 class="text-3xl font-bold mb-4">🗺️ 2. 地震學基礎圖解</h1>
+            <p class="mb-4 text-lg">讓我們來看課本上的幾張重要圖片，把它們串成一個故事：</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <img src="1.1-1.png" alt="圖 1.1-1" class="content-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'200\'><rect width=\'100%\' height=\'100%\' fill=\'%23eee\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'16\'>圖 1.1-1: Source-Medium-Receiver</text></svg>'">
+                    <p class="text-sm"><strong>圖1.1-1：</strong> 這是地震學的黃金鐵三角！<br> <span class="highlight">Source(震源)</span> 產生波，穿過 <span class="highlight">Medium(地球介質)</span>，最後被 <span class="highlight">Receiver(地震儀)</span> 接收。</p>
+                </div>
+                <div>
+                    <img src="1.1-2.png" alt="圖 1.1-2" class="content-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'200\'><rect width=\'100%\' height=\'100%\' fill=\'%23eee\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'16\'>圖 1.1-2: 斷層錯動</text></svg>'">
+                    <p class="text-sm"><strong>圖1.1-2：</strong> 震源通常是斷層的錯動。想像你用力折一根樹枝，啪的一聲斷裂，能量就釋放出來了！</p>
+                </div>
+                <div>
+                    <img src="1.1-3.png" alt="圖 1.1-3" class="content-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'200\'><rect width=\'100%\' height=\'100%\' fill=\'%23eee\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'16\'>圖 1.1-3: 地震紀錄</text></svg>'">
+                    <p class="text-sm"><strong>圖1.1-3：</strong> 地震紀錄(Seismogram)。上面的波浪線就是大地的「心電圖」，記錄了地表搖晃的程度。</p>
+                </div>
+                <div>
+                    <img src="1.1-4.png" alt="圖 1.1-4" class="content-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'200\'><rect width=\'100%\' height=\'100%\' fill=\'%23eee\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'16\'>圖 1.1-4: 地球內部構造</text></svg>'">
+                    <p class="text-sm"><strong>圖1.1-4 & 1.1-5：</strong> 地震波穿透地球時，遇到不同的岩石會轉彎(折射)。這讓我們畫出了地球的剖面圖（地殼、地函、地核）！</p>
+                </div>
+            </div>
+
+            <div class="quiz-box">
+                <h3 class="font-bold text-xl mb-2">🤔 小測驗 (選擇題)</h3>
+                <p>在地震學的鐵三角中，接收並記錄大地搖晃的儀器稱為什麼？</p>
+                <div class="mt-3">
+                    <button class="btn" onclick="checkAnswer('p2', false)">A. Source (震源)</button>
+                    <button class="btn" onclick="checkAnswer('p2', false)">B. Medium (介質)</button>
+                    <button class="btn" onclick="checkAnswer('p2', true)">C. Receiver (接收器/地震儀)</button>
+                </div>
+                <div id="ans-p2" class="answer-box">
+                    <strong>解答：C！</strong><br>
+                    非常棒！地震儀就像是地球的「心跳監測器」，負責把搖晃記錄下來。
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page-3">
+            <h1 class="text-3xl font-bold mb-4">⚠️ 3. Hazard 與 Risk 的區別</h1>
+            <p class="text-lg leading-relaxed mb-4">
+                這兩個英文單字翻成中文都很像「危險」，但在科學上完全不同喔！
+            </p>
+            <ul class="list-disc pl-6 mb-4 text-lg">
+                <li>🌋 <strong>Seismic Hazard (地震危害)：</strong> 大自然給的。<br>
+                    <em>類比：</em> 森林裡有一隻兇猛的熊。你無法改變熊的存在。</li>
+                <li>🏚️ <strong>Seismic Risk (地震風險)：</strong> 人為因素決定的。<br>
+                    <em>類比：</em> 你身上塗滿蜂蜜走進森林 (Risk超高) vs. 你坐在裝甲車裡逛森林 (Risk很低)。</li>
+            </ul>
+            <p class="text-lg mb-4">
+                <strong>結論：</strong> 我們無法減少 Hazard (無法阻止地震發生)，但我們可以透過蓋好房子來降低 Risk！
+            </p>
+            
+            <div class="quiz-box">
+                <h3 class="font-bold text-xl mb-2">🤔 小測驗 (問答題)</h3>
+                <p>假設日本跟非洲沙漠都發生了規模 7.0 的地震。哪裡的 Hazard 比較大？哪裡的 Risk 比較大？</p>
+                <div class="mt-3">
+                    <button class="btn" onclick="toggleAnswer('ans-p3')">看解答 👀</button>
+                </div>
+                <div id="ans-p3" class="answer-box">
+                    <strong>解答：</strong><br>
+                    - <strong>Hazard (危害)：</strong> 兩邊的 Hazard 是一樣的！(都是大自然釋放的規模7.0能量)。<br>
+                    - <strong>Risk (風險)：</strong> 如果沙漠裡沒人沒房子，Risk 幾乎是零！而日本城市人口密集，如果防震沒做好，Risk 就會非常高。
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page-4">
+            <h1 class="text-3xl font-bold mb-4">📉 4. 為什麼地震波會越來越弱？</h1>
+            <p class="text-lg leading-relaxed mb-4">
+                為什麼我們在台灣感受不到美國的地震？課本提到了能量衰減的公式(1)。別怕公式，原因只有兩個：
+            </p>
+            <div class="flex flex-col md:flex-row items-center mb-4">
+                <div class="flex-1">
+                    <ul class="list-decimal pl-6 text-lg space-y-2">
+                        <li><strong>幾何擴散 (Geometric Spreading)：</strong><br>
+                        就像把一顆石頭丟進水池，漣漪越變越大圈。能量被分配到更大的圓周上，所以波浪變低了。</li>
+                        <li><strong>內在衰減 (Intrinsic Attenuation)：</strong><br>
+                        就像你在水中揮拳和在「果凍」中揮拳。地球內部是有摩擦力的！波在傳遞時，部分動能會因為摩擦變成熱能而被消耗掉。</li>
+                    </ul>
+                </div>
+                <div class="flex-1 text-center">
+                    <div class="wave-container">
+                        <div class="wave-circle"></div>
+                        <div class="wave-circle"></div>
+                        <div class="wave-circle"></div>
+                    </div>
+                    <p class="text-sm mt-2">💧 就像池塘的漣漪，越傳越弱</p>
+                </div>
+            </div>
+
+            <div class="quiz-box">
+                <h3 class="font-bold text-xl mb-2">🤔 小測驗 (是非題)</h3>
+                <p>地震波傳遞越遠感覺越小，純粹是因為「幾何擴散」，跟地球內部的材質摩擦力無關。</p>
+                <div class="mt-3">
+                    <button class="btn" onclick="checkAnswer('p4', false)">⭕ 是的</button>
+                    <button class="btn" onclick="checkAnswer('p4', true)">❌ 錯的</button>
+                </div>
+                <div id="ans-p4" class="answer-box">
+                    <strong>解答：❌ 錯的！</strong><br>
+                    兩者都有關喔！除了擴散效應外，「內在衰減」(岩石的摩擦力吸收能量) 也是讓地震波變弱的重要原因。
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page-5">
+            <h1 class="text-3xl font-bold mb-4">🏚️ 5. 地震的社會影響</h1>
+            <p class="mb-4 text-lg">地震可怕的地方，不只是「搖晃」而已，它還會引發連鎖反應。我們來看看課本這三張圖：</p>
+            
+            <div class="space-y-6">
+                <div class="flex items-start gap-4">
+                    <img src="1.2-3.jpg" alt="圖 1.2-3" class="w-1/3 rounded shadow" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'150\' height=\'100\'><rect width=\'100%\' height=\'100%\' fill=\'%23eee\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\'>圖1.2-3 地表破裂</text></svg>'">
+                    <div>
+                        <h4 class="font-bold text-xl">圖 1.2-3：地表破裂 (Fault Rupture)</h4>
+                        <p>斷層直接把地表撕裂開來！如果你的房子剛好蓋在斷層線上，不管房子蓋得多堅固，都會被直接扯斷。這就是為什麼要避開活動斷層帶。</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <img src="1.2-5.png" alt="圖 1.2-5" class="w-1/3 rounded shadow" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'150\' height=\'100\'><rect width=\'100%\' height=\'100%\' fill=\'%23eee\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\'>圖1.2-5 震動破壞</text></svg>'">
+                    <div>
+                        <h4 class="font-bold text-xl">圖 1.2-5：強烈搖晃造成的倒塌</h4>
+                        <p>這是一般最常見的災害。強烈的地震波讓建築物無法承受剪力而倒塌。</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <img src="1.2-6.png" alt="圖 1.2-6" class="w-1/3 rounded shadow" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'150\' height=\'100\'><rect width=\'100%\' height=\'100%\' fill=\'%23eee\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\'>圖1.2-6 海嘯</text></svg>'">
+                    <div>
+                        <h4 class="font-bold text-xl">圖 1.2-6：海嘯 (Tsunami)</h4>
+                        <p>海底地震讓海床瞬間抬升，推動了整層海水，引發巨大的海嘯，摧毀沿海城市。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-box mt-4">
+                <h3 class="font-bold text-xl mb-2">🤔 小測驗 (問答題)</h3>
+                <p>地震造成的災害只有「房子被搖倒」這一種嗎？</p>
+                <div class="mt-3">
+                    <button class="btn" onclick="toggleAnswer('ans-p5')">看解答 👀</button>
+                </div>
+                <div id="ans-p5" class="answer-box">
+                    <strong>解答：不是喔！</strong><br>
+                    還有斷層直接錯動造成的地表破裂、引發海嘯、山崩，以及後面會提到的土壤液化等。這些被稱為「二次災害」。
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page-6">
+            <h1 class="text-3xl font-bold mb-4">🏗️ 6. 建築物與地震波的共舞</h1>
+            <p class="text-lg leading-relaxed mb-4">
+                不同的房子對地震的反應完全不同喔！
+            </p>
+            <p class="text-lg mb-2"><strong>1. 建材的抵抗力：</strong></p>
+            <ul class="list-disc pl-6 mb-4">
+                <li>🧱 <strong>磚塊/混凝土：</strong> 很硬但很脆。就像玻璃，一折就斷。</li>
+                <li>🪵 <strong>木頭/鋼骨：</strong> 具有彈性（韌性）。就像竹子，搖晃時會彎曲但不容易斷。</li>
+            </ul>
+            
+            <p class="text-lg mb-2"><strong>2. 建築物高度與「共振」：</strong></p>
+            <div class="building-container">
+                <div class="text-center">
+                    <div class="building short mx-auto"></div>
+                    <p class="mt-2 font-bold">矮房子</p>
+                    <p class="text-sm">怕「高頻(短波)」快速搖晃</p>
+                </div>
+                <div class="text-center">
+                    <div class="building tall mx-auto"></div>
+                    <p class="mt-2 font-bold">高樓大廈</p>
+                    <p class="text-sm">怕「低頻(長波)」緩慢搖晃</p>
+                </div>
+            </div>
+            <p class="text-md italic text-gray-600 mb-4 text-center">↑ 就像不同的音叉對應不同的頻率，這稱為「共振 (Resonance)」。</p>
+
+            <div class="quiz-box">
+                <h3 class="font-bold text-xl mb-2">🤔 小測驗 (選擇題)</h3>
+                <p>遠處發生了大地震，傳到市區時只剩下「低頻的長波」(慢速的大搖晃)。請問哪種建築物最危險？</p>
+                <div class="mt-3">
+                    <button class="btn" onclick="checkAnswer('p6', false)">A. 一樓的平房</button>
+                    <button class="btn" onclick="checkAnswer('p6', true)">B. 台北101等摩天大樓</button>
+                </div>
+                <div id="ans-p6" class="answer-box">
+                    <strong>解答：B！</strong><br>
+                    沒錯！長波會跟高樓產生「共振」，讓高樓越搖越大。矮房反而對長波沒什麼感覺！
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page-7">
+            <h1 class="text-3xl font-bold mb-4">🌊 7. 土壤液化 (Soil Liquefaction)</h1>
+            <p class="text-lg leading-relaxed mb-4">
+                你有沒有去過海邊，雙腳踩在濕濕的沙灘上，然後快速地原地踏步？你會發現沙子突然變成了軟泥，你的腳陷下去了！
+            </p>
+            <p class="text-lg leading-relaxed mb-4">
+                這就是 <span class="highlight">土壤液化</span>！<br>
+                在原本充滿地下水且鬆散的沙土層，因為地震的強烈搖晃，讓沙子之間的空隙縮小，水壓瞬間變大，把沙粒撐開。這時候，固體的土地就暫時變成了<strong>「泥巴湯」</strong>！
+            </p>
+            <p class="text-lg mb-4">👉 結果：蓋在上面的房子會傾斜、下沉，地下水管會浮出地面。</p>
+
+            <div class="quiz-box">
+                <h3 class="font-bold text-xl mb-2">🤔 小測驗 (問答題)</h3>
+                <p>要發生土壤液化，通常需要哪兩個條件？</p>
+                <div class="mt-3">
+                    <button class="btn" onclick="toggleAnswer('ans-p7')">看解答 👀</button>
+                </div>
+                <div id="ans-p7" class="answer-box">
+                    <strong>解答：</strong><br>
+                    1. <strong>鬆散的沙土</strong> (不能是堅硬的岩石)<br>
+                    2. <strong>地下水位很高</strong> (充滿了水)<br>
+                    加上地震的搖晃，泥巴湯就完成啦！
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page-8">
+            <h1 class="text-3xl font-bold mb-4">🔮 8. 預報 (Forecast) vs 預測 (Prediction)</h1>
+            <div class="flex flex-col md:flex-row gap-6 items-center">
+                <div class="flex-1">
+                    <p class="text-lg mb-4">這兩個詞在科學上標準非常不同！</p>
+                    <ul class="list-disc pl-6 mb-4 text-lg">
+                        <li>🎯 <strong>預測 (Prediction)：</strong> <br>
+                            準確指出「何時(精準到天)、何地、多大規模」。就像預言家說：「明天下午三點，洛杉磯會有規模7.0地震。」<br>
+                            <em>(⚠️目前科學界還做不到可靠的短期預測！)</em></li>
+                        <li>📊 <strong>預報 (Forecast)：</strong> <br>
+                            給出一段時間內的「發生機率」。就像天氣預報說：「未來30年內，加州發生大地震的機率是70%。」</li>
+                    </ul>
+                </div>
+                <div class="flex-1">
+                    <img src="1.2-14.jpg" alt="圖 1.2-14" class="content-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'200\'><rect width=\'100%\' height=\'100%\' fill=\'%23eee\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\'>圖1.2-14 機率預報圖</text></svg>'">
+                    <p class="text-sm text-center">圖 1.2-14：地震機率預報圖。顏色越深代表未來發生大地震的機率越高。</p>
+                </div>
+            </div>
+
+            <div class="quiz-box">
+                <h3 class="font-bold text-xl mb-2">🤔 小測驗 (是非題)</h3>
+                <p>如果有人在網路上發文說：「根據我的觀察，後天早上台北一定會發生規模 8.0 的地震。」這屬於科學的地震預報 (Forecast)。</p>
+                <div class="mt-3">
+                    <button class="btn" onclick="checkAnswer('p8', false)">⭕ 是的</button>
+                    <button class="btn" onclick="checkAnswer('p8', true)">❌ 錯的</button>
+                </div>
+                <div id="ans-p8" class="answer-box">
+                    <strong>解答：❌ 錯的！</strong><br>
+                    這叫「預測 (Prediction)」，而且目前沒有任何科學方法可以準確做到這點。這通常是無稽之談！科學界給出的是長期的「機率預報 (Forecast)」。
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page-9">
+            <h1 class="text-3xl font-bold mb-4">🧩 9. 什麼是地震空區 (Seismic Gap)?</h1>
+            <p class="text-lg leading-relaxed mb-4">
+                想像一條很長的橡皮筋，你不斷拉長它。大部分的地方都已經啪啪啪地斷過釋放能量了，卻有「一小段」卡住了，幾十年來都沒動靜。
+            </p>
+            <p class="text-lg leading-relaxed mb-4">
+                這段安靜的區域就叫做 <span class="highlight">Seismic Gap (地震空區)</span>！<br>
+                它不是因為安全才不地震，而是它把能量「鎖住」了！安靜越久，累積的能量越大，未來發生超級大地震的機率就越高。
+            </p>
+            
+            <div class="text-center mb-4">
+                <img src="1.2-15.png" alt="圖 1.2-15" class="content-img mx-auto max-h-64" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'150\'><rect width=\'100%\' height=\'100%\' fill=\'%23eee\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\'>圖1.2-15 地震空區示意圖</text></svg>'">
+                <p class="text-sm">圖 1.2-15：圖中空白沒發生過地震的區塊，就是高風險的 Seismic Gap。</p>
+            </div>
+
+            <div class="quiz-box">
+                <h3 class="font-bold text-xl mb-2">🤔 小測驗 (選擇題)</h3>
+                <p>關於地震空區，下列敘述何者正確？</p>
+                <div class="mt-3">
+                    <button class="btn" onclick="checkAnswer('p9', false)">A. 因為從來不發生地震，所以去那邊買房子最安全</button>
+                    <button class="btn" onclick="checkAnswer('p9', true)">B. 那裡就像拉緊的橡皮筋，未來發生大地震的風險很高</button>
+                </div>
+                <div id="ans-p9" class="answer-box">
+                    <strong>解答：B！</strong><br>
+                    完全正確！這就像是斷層帶上的「定時炸彈」，我們特別需要關注這些空區。
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page-10">
+            <h1 class="text-3xl font-bold mb-4">🕵️‍♂️ 10. 地震預測的方法有哪些？</h1>
+            <p class="text-lg leading-relaxed mb-4">
+                雖然我們還無法準確「預測」地震，但科學家嘗試尋找地震發生前的「前兆 (Precursors)」。<br>
+                常見的研究方向包含：
+            </p>
+            <ul class="list-disc pl-6 mb-4 text-lg">
+                <li>📈 <strong>地殼變形：</strong> 使用 GPS 測量地面是不是被擠壓膨脹了。</li>
+                <li>💧 <strong>地下水與氣體異常：</strong> 岩石破裂前可能會釋放出地下深處的「氡氣 (Radon)」，或改變地下水位。</li>
+                <li>⚡ <strong>電磁波異常：</strong> 岩石受巨大壓力時可能會產生微弱的電磁變化。</li>
+                <li>🐶 <strong>前震與動物異常：</strong> 大地震前有時會有小地震(前震)。至於動物行為，雖然民間傳說很多，但科學上很難定量證明。</li>
+            </ul>
+            <p class="text-md italic text-red-500 mb-4">⚠️ 提醒：這些方法目前都還無法 100% 準確預測地震，只能作為參考研究。</p>
+
+            <div class="quiz-box">
+                <h3 class="font-bold text-xl mb-2">🤔 小測驗 (問答題)</h3>
+                <p>為什麼「動物異常行為」(例如青蛙集體過馬路) 很難被科學家當作可靠的地震預測標準？</p>
+                <div class="mt-3">
+                    <button class="btn" onclick="toggleAnswer('ans-p10')">看解答 👀</button>
+                </div>
+                <div id="ans-p10" class="answer-box">
+                    <strong>解答：</strong><br>
+                    因為干擾因素太多了！青蛙過馬路可能是因為下雨、發情期或是被驚嚇。科學需要「每次發生 A 就一定導致 B」的重複性，但動物行為無法提供這樣穩定的數據。
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page-11">
+            <h1 class="text-3xl font-bold mb-4">☢️ 11. 用地震學抓出核子試爆！</h1>
+            <p class="text-lg leading-relaxed mb-4">
+                你知道嗎？地震學家還肩負著維護世界和平的任務！如果某個國家偷偷在地下試爆核彈，我們能用地震儀抓到他們！
+            </p>
+            <div class="flex flex-col md:flex-row items-center gap-6 mb-4">
+                <div class="flex-1 text-lg">
+                    <p><strong>差異在哪裡？</strong></p>
+                    <ul class="list-disc pl-6">
+                        <li>💥 <strong>核子試爆 (Explosion)：</strong><br>像氣球爆炸，能量是「四面八方均勻膨脹」的。初達波(P波)在所有方向都是向外推的。</li>
+                        <li>🪨 <strong>自然地震 (Earthquake)：</strong><br>是斷層「錯動」滑開，所以有些方向是被推擠(壓縮)，有些方向是被拉扯(伸張)。</li>
+                    </ul>
+                    <p class="mt-4">透過分析世界各地測站收到的波形，我們就能區分它是核爆還是地震！</p>
+                </div>
+                <div class="flex-1">
+                    <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" class="w-full bg-white rounded shadow p-2">
+                        <circle cx="80" cy="100" r="30" fill="none" stroke="#ff4d4d" stroke-width="2"/>
+                        <path d="M80,60 L80,40 M80,140 L80,160 M40,100 L20,100 M120,100 L140,100 M50,70 L35,55 M110,130 L125,145 M110,70 L125,55 M50,130 L35,145" stroke="#ff4d4d" stroke-width="2" marker-end="url(#arrow-red)"/>
+                        <text x="80" y="185" text-anchor="middle" font-size="14" font-weight="bold">核爆 (全向外推)</text>
+                        
+                        <line x1="220" y1="50" x2="220" y2="150" stroke="#333" stroke-width="4"/>
+                        <path d="M210,90 L210,60" stroke="#4A90E2" stroke-width="2" marker-end="url(#arrow-blue)"/>
+                        <path d="M230,110 L230,140" stroke="#4A90E2" stroke-width="2" marker-end="url(#arrow-blue)"/>
+                        <text x="220" y="185" text-anchor="middle" font-size="14" font-weight="bold">地震 (斷層錯動)</text>
+                        
+                        <defs>
+                            <marker id="arrow-red" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#ff4d4d"/></marker>
+                            <marker id="arrow-blue" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4A90E2"/></marker>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="quiz-box">
+                <h3 class="font-bold text-xl mb-2">🤔 小測驗 (是非題)</h3>
+                <p>地下核爆產生的地震波，其震源機制（發震方式）跟天然斷層錯動一模一樣，所以科學家無法分辨。</p>
+                <div class="mt-3">
+                    <button class="btn" onclick="checkAnswer('p11', false)">⭕ 是的</button>
+                    <button class="btn" onclick="checkAnswer('p11', true)">❌ 錯的</button>
+                </div>
+                <div id="ans-p11" class="answer-box">
+                    <strong>解答：❌ 錯的！</strong><br>
+                    它們很不一樣！核爆是往四面八方「炸開」，而地震是沿著斷層面「滑動」。地震學家可以透過地震波的方向性輕鬆抓出核爆。
+                </div>
+            </div>
+        </div>
+
+        <div class="page text-center" id="page-12">
+            <h1 class="text-4xl font-bold mb-6">🏆 終極試煉：大師的認證</h1>
+            <p class="text-xl mb-6">恭喜你學完了第一章的所有核心概念！<br>現在讓我們來測試一下你是否已經具備「地震學大師」的資格！</p>
+            
+            <div id="game-intro">
+                <button class="btn text-2xl px-8 py-4" style="background-color: var(--macaron-pink); border-color: transparent;" onclick="startGame()">
+                    🎮 開始遊戲！
+                </button>
+            </div>
+
+            <div id="game-area" class="hidden text-left bg-white p-6 rounded shadow-lg max-w-lg mx-auto">
+                <h2 id="q-text" class="text-2xl font-bold mb-4">問題...</h2>
+                <div id="q-options" class="flex flex-col space-y-3">
+                    </div>
+                <p id="q-feedback" class="mt-4 font-bold hidden"></p>
+                <button id="next-btn" class="mt-4 btn hidden" onclick="nextQuestion()">下一題</button>
+            </div>
+
+            <div id="game-result" class="hidden mt-8">
+                <h2 class="text-3xl font-bold mb-4">🎉 測驗結束！</h2>
+                <p class="text-2xl">你的得分： <span id="score" class="text-red-500 font-bold"></span> / 5</p>
+                <p id="result-message" class="text-xl mt-4"></p>
+                <button class="btn mt-6" onclick="resetGame()">再玩一次</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 頁面切換邏輯
+        function showPage(index) {
+            // 隱藏所有頁面
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            // 移除所有導覽列的 active 狀態
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            
+            // 顯示對應頁面
+            document.getElementById(`page-${index}`).classList.add('active');
+            // 點亮對應導覽列
+            document.querySelectorAll('.nav-item')[index].classList.add('active');
+        }
+
+        // 小測驗邏輯
+        function checkAnswer(id, isCorrect) {
+            const ansBox = document.getElementById(`ans-${id}`);
+            ansBox.style.display = 'block';
+            if(isCorrect) {
+                ansBox.style.borderColor = '#88C273';
+                ansBox.style.backgroundColor = '#E2F0CB';
+            } else {
+                ansBox.style.borderColor = '#FFB7B2';
+                ansBox.style.backgroundColor = '#FFE5E5';
+            }
+        }
+
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+        }
+
+        // 終極遊戲邏輯
+        const questions = [
+            {
+                q: "1. 斷層長久未活動，累積大量能量的危險區域稱為什麼？",
+                opts: ["A. 地震避風港", "B. 地震空區 (Seismic Gap)", "C. 土壤液化區"],
+                ans: 1
+            },
+            {
+                q: "2. 我們無法改變大自然發生地震的機率 (Hazard)，但我們可以透過加強建築物來降低什麼？",
+                opts: ["A. Risk (風險)", "B. 能量衰減", "C. 地球板塊運動"],
+                ans: 0
+            },
+            {
+                q: "3. 長週期的地震波（搖晃很慢但幅度大）最容易對哪種建築造成嚴重的共振破壞？",
+                opts: ["A. 低矮的一樓平房", "B. 摩天大樓 (如台北101)", "C. 堅硬的地下碉堡"],
+                ans: 1
+            },
+            {
+                q: "4. 科學家如何利用地震儀來區分「天然地震」與「地下核子試爆」？",
+                opts: ["A. 觀察地震波(P波)在不同方向是推還是拉", "B. 測量當地的天氣變化", "C. 測量地震波的幾何擴散程度"],
+                ans: 0
+            },
+            {
+                q: "5. 發生「土壤液化」通常需要具備哪兩個環境條件？",
+                opts: ["A. 堅硬岩盤與極度乾燥", "B. 鬆散沙土與極高的地下水位", "C. 黏土層與深層地下水"],
+                ans: 1
+            }
+        ];
+
+        let currentQIndex = 0;
+        let score = 0;
+
+        function startGame() {
+            document.getElementById('game-intro').style.display = 'none';
+            document.getElementById('game-area').style.display = 'block';
+            document.getElementById('game-result').style.display = 'none';
+            currentQIndex = 0;
+            score = 0;
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQIndex];
+            document.getElementById('q-text').innerText = q.q;
+            
+            const optionsContainer = document.getElementById('q-options');
+            optionsContainer.innerHTML = ''; // 清空選項
+            
+            q.opts.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn text-left p-3';
+                btn.innerText = opt;
+                btn.onclick = () => checkGameAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('q-feedback').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+        }
+
+        function checkGameAnswer(selectedIndex, selectedBtn) {
+            const q = questions[currentQIndex];
+            const feedback = document.getElementById('q-feedback');
+            const nextBtn = document.getElementById('next-btn');
+            
+            // 停用所有按鈕防止重複點擊
+            const allBtns = document.getElementById('q-options').querySelectorAll('button');
+            allBtns.forEach(btn => btn.disabled = true);
+            
+            feedback.style.display = 'block';
+            if (selectedIndex === q.ans) {
+                feedback.innerText = '✅ 答對了！太棒了！';
+                feedback.className = 'mt-4 font-bold text-green-600';
+                selectedBtn.style.backgroundColor = '#88C273';
+                selectedBtn.style.color = 'white';
+                score++;
+            } else {
+                feedback.innerText = `❌ 答錯囉！正確答案是：${q.opts[q.ans]}`;
+                feedback.className = 'mt-4 font-bold text-red-500';
+                selectedBtn.style.backgroundColor = '#FFB7B2';
+            }
+            
+            nextBtn.style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            currentQIndex++;
+            if (currentQIndex < questions.length) {
+                renderQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('game-area').style.display = 'none';
+            document.getElementById('game-result').style.display = 'block';
+            document.getElementById('score').innerText = score;
+            
+            const msg = document.getElementById('result-message');
+            if (score === 5) {
+                msg.innerText = "🤩 滿分！你真的是地震學大師！";
+            } else if (score >= 3) {
+                msg.innerText = "👏 很不錯喔！基礎概念都有掌握到！";
+            } else {
+                msg.innerText = "💪 差一點點！回去複習一下章節再挑戰一次吧！";
+            }
+        }
+
+        function resetGame() {
+            document.getElementById('game-result').style.display = 'none';
+            document.getElementById('game-intro').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
